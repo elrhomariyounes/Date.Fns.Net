@@ -1,0 +1,23 @@
+﻿@inject HttpClient Http
+@if ( htmlAsString == "")
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @htmlContent
+}
+
+
+@code {
+
+    private MarkupString htmlContent;
+    private string htmlAsString = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var markDownAsString = await Http.GetStringAsync("sample-data/README.MD");
+        htmlAsString = Markdown.ToHtml(markDownAsString);
+        htmlContent = new MarkupString(htmlAsString);
+    }
+}

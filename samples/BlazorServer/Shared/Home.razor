@@ -1,0 +1,22 @@
+﻿@inject HomeService HomeService
+@if (htmlAsString == "")
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @htmlContent
+}
+
+
+@code {
+
+    private MarkupString htmlContent;
+    private string htmlAsString = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        htmlAsString = await HomeService.GetReadMeAsStringAsync();
+        htmlContent = new MarkupString(htmlAsString);
+    }
+}

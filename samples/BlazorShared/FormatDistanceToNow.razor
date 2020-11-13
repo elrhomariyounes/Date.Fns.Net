@@ -1,0 +1,40 @@
+﻿@inject IDateService DateService
+<h3>Format Distance To Now</h3>
+<div>
+    <label>Date : </label>
+    <input type="date" @bind="@Date" />
+</div>
+
+<div>
+    <p>Distance : @distance</p>
+    <p>Distance Strict : @distanceStrict</p>
+</div>
+<button class="btn btn-primary" @onclick="FormatDistanceAsync">
+    Calculate
+</button>
+@code {
+    public DateTime Date { get; set; } = DateTime.Today;
+
+    private string distance = "";
+    private string distanceStrict = "";
+
+    private async Task FormatDistanceAsync()
+    {
+        //Optional Options for FormatDistance
+        var options = new FormatDistanceOptions
+        {
+            AddSuffix = true,
+            IncludeSeconds = true
+        };
+
+        //Optional Options for FormatDistanceStrict
+        var optionsStrict = new FormatDistanceStrictOptions
+        {
+            AddSuffix = true,
+            Unit = "second"
+        };
+
+        distance = await DateService.FormatDistanceToNow(Date, options);
+        distanceStrict = await DateService.FormatDistanceToNowStrict(Date, optionsStrict);
+    }
+}

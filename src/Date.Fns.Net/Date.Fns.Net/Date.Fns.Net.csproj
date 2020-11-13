@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+  
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <JsLibRoot>DateFns\</JsLibRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(JsLibRoot)node_modules\**</DefaultItemExcludes>
+    <Version>0.2.0</Version>
+    <PackageId>Date.Fns.Net</PackageId>
+    <Authors>Skikra</Authors>
+    <Company>Skikra</Company>
+    <Description>This is a .Net Wrapper for date-fns.org Javascript library.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>Blazor, Blazor-WebAssembly, Blazor-Server,dotnet-core, dotnet, dates, date, date-fns, javascript</PackageTags>
+    <RepositoryUrl>https://github.com/elrhomariyounes/Date.Fns.Net</RepositoryUrl>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Content Remove="$(JsLibRoot)**" />
+    <None Remove="$(JsLibRoot)**" />
+    <None Include="$(JsLibRoot)**" Exclude="$(JsLibRoot)node_modules\**" />
+  </ItemGroup>
+
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Release'">
+    <!-- Ensure Node.js is installed -->
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(JsLibRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(JsLibRoot)" Command="npm run build" />
+  </Target>
+
+  <Target Name="PackRunWebpack" BeforeTargets="Pack">
+    <!-- Before packing, ensure the JS resources are freshly built in production mode -->
+    <Exec WorkingDirectory="$(JsLibRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(JsLibRoot)" Command="npm run build" />
+  </Target>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+</Project>
